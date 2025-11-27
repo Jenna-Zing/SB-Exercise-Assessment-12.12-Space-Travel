@@ -1,9 +1,10 @@
 import styles from "./App.module.css";
+import SpaceTravelRouter from "./routes/SpaceTravelRouter";
 
 function App() {
   return (
     <>
-      <h1>Space Travel</h1>
+      <SpaceTravelRouter />
     </>
   );
 }
