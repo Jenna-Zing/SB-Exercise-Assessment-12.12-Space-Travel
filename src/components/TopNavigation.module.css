@@ -1,0 +1,26 @@
+/* NavBar container */
+.navbar {
+  /* using flexbox to center links horizontally */
+  display: flex;
+  justify-content: center;
+
+  gap: 20px; /* add spacing between links */
+  padding: 10px;
+  background-color: black;
+}
+
+/* link styling */
+.navLink {
+  text-decoration: none; /* remove link underline */
+
+  color: white;
+
+  padding: 10px; /* add spacing inside "button appearance" */
+  background-color: black;
+  border: 1px solid white;
+}
+
+/* link styling when hovered on */
+.navLink:hover {
+  color: green;
+}
