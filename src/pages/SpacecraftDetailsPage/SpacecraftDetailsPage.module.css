@@ -1,0 +1,50 @@
+/* page wrapper to fill available space below TopNav */
+.pageWrapper {
+  display: flex;
+  align-items: center; /* vertically center */
+  flex-direction: column;
+  flex-grow: 1; /* fill remaining vertical space */
+  padding: 1 rem;
+}
+
+/* details container styling */
+.detailsContainer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.imageContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1.5rem;
+}
+
+.infoContainer {
+  display: flex;
+}
+
+.leftInfo {
+  flex: 1; /* each will take 50% of the row in the infoContainer */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.5rem; /* add space between each child element - e.g. name, capacity */
+
+  padding: 2.5rem;
+}
+
+.rightInfo {
+  /* THESE STYLING AT THE TOP ARE DIFFERENT FROM LEFTINFO */
+  align-items: flex-start; /* align children to start (left) */
+  text-align: left; /* description text wraps normally from L->R */
+
+  flex: 1; /* each will take 50% of the row in the infoContainer */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* add space between each child element - e.g. name, capacity */
+
+  padding: 1.5rem;
+}

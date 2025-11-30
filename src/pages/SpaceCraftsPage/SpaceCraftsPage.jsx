@@ -5,18 +5,18 @@ import styles from "./SpaceCraftsPage.module.css";
 import SpacecraftDetailsPage from "../SpacecraftDetailsPage/SpacecraftDetailsPage";
 
 export default function SpaceCraftsPage() {
-  // let spacecrafts = [];
   const [spacecrafts, setSpacecrafts] = useState([]);
   const navigate = useNavigate();
 
+  // must put dependency array so it only runs once on mounting* / initial page load, so useEffect doesn't run after each render... runs infinitely if so
   useEffect(() => {
     loadSpacecrafts();
-  });
+  }, []);
 
   async function loadSpacecrafts() {
     let response = await SpaceTravelApi.getSpacecrafts();
     setSpacecrafts(response.data);
-    console.log("mocked spacecrafts", spacecrafts);
+    console.log("res data for spacecrafts", response.data);
   }
 
   function handleImgClick(spacecraftId) {
