@@ -13,6 +13,7 @@
 .navLink {
   text-decoration: none; /* remove link underline */
 
+  font-size: 1.25rem;
   color: white;
 
   padding: 10px; /* add spacing inside "button appearance" */

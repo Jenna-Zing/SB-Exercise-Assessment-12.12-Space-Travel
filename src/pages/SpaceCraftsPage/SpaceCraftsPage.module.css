@@ -1,0 +1,13 @@
+.spCard {
+  border: 1px solid white;
+  padding: 1.5em;
+  display: flex;
+}
+
+.spCardItem {
+  flex-grow: 1;
+}
+
+.spCardDetails {
+  flex-grow: 2;
+}
