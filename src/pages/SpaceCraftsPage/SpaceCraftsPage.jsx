@@ -3,26 +3,26 @@ import { useNavigate } from "react-router-dom";
 import SpaceTravelApi from "../../services/SpaceTravelApi";
 import styles from "./SpaceCraftsPage.module.css";
 import SpacecraftDetailsPage from "../SpacecraftDetailsPage/SpacecraftDetailsPage";
-import { SpaceshipsContext } from "../../context/galaxyContext";
+import { SpacecraftsContext } from "../../context/galaxyContext";
+import Loading from "../../components/Loading/Loading";
 
 export default function SpaceCraftsPage() {
-  // TODO: rename to spacecraftsContext not spaceshipsContext
-  const {
-    spacecrafts: spaceshipsFromContext,
-    setSpacecrafts: setSpacecraftsFromContext,
-  } = useContext(SpaceshipsContext);
-  const [spacecrafts, setSpacecrafts] = useState([]);
+  const { spacecrafts, setSpacecrafts } = useContext(SpacecraftsContext);
+  const [loading, setLoading] = useState(true);
+
   const navigate = useNavigate();
 
   // must put dependency array so it only runs once on mounting* / initial page load, so useEffect doesn't run after each render... runs infinitely if so
   useEffect(() => {
+    // load spacecrafts only once when the page first loads
     loadSpacecrafts();
-  }, []);
+  }, []); // empty dependency array means this will run only on mount (aka first page load)
 
   async function loadSpacecrafts() {
     let response = await SpaceTravelApi.getSpacecrafts();
-    setSpacecrafts(response.data);
+    setSpacecrafts(response.data); // update the global context with fetched data
     console.log("res data for spacecrafts", response.data);
+    setLoading(false);
   }
 
   function handleImgClick(spacecraftId) {
@@ -31,79 +31,66 @@ export default function SpaceCraftsPage() {
 
   function handleBuildSpacecraftClick() {
     navigate(`/construction`);
+
+    // After building a spacecraft, reload the spacecrafts list so the context is up-to-date with the mockDB
+    loadSpacecrafts();
+  }
+
+  async function handleDestroySpaceshipClick(spacecraftId) {
+    // show loading while waiting for API to delete spaceship
+    setLoading(true);
+
+    // destroy the spaceship
+    await SpaceTravelApi.destroySpacecraftById({ id: spacecraftId });
+
+    // After destroying a spacecraft, reload the spacecrafts list so the context is up-to-date with the mockDB
+    loadSpacecrafts();
   }
 
   return (
     <>
-      <h1>Space Crafts Page</h1>
-      <button onClick={() => handleBuildSpacecraftClick()}>
-        Build a Spacecraft
-      </button>
-      {/* {JSON.stringify(spacecrafts)} */}
-      {spaceshipsFromContext.map((spacecraft) => {
-        return (
-          <div key={`spacecraft-${spacecraft.id}`} className={styles.spCard}>
-            <div
-              className={styles.spCardItem}
-              onClick={() => handleImgClick(spacecraft.id)}
-            >
-              {spacecraft.pictureUrl ? (
-                <img src={spacecraft.pictureUrl} />
-              ) : (
-                "🚀"
-              )}
-            </div>
-            <div className={styles.spCardDetails}>
-              <p>Name: {spacecraft.name}</p>
-              <p>Capacity: {spacecraft.capacity}</p>
-            </div>
-            <div className={styles.spCardItem}>
-              <button>Destroy</button>
-            </div>
-            {/* <p>Name: {spacecraft.name}</p>
-              <p>Capacity: {spacecraft.capacity}</p>
-              <p>{spacecraft.id}</p>
-              <p>{spacecraft.description}</p>
-              <p>{spacecraft.currentLocation}</p>
-              <p>{spacecraft.pictureUrl}</p> */}
-          </div>
-        );
-      })}
-      <div>
-        {spacecrafts.map((spacecraft) => {
-          return (
-            <div key={`spacecraft-${spacecraft.id}`} className={styles.spCard}>
-              <div
-                className={styles.spCardItem}
-                onClick={() => handleImgClick(spacecraft.id)}
-              >
-                {spacecraft.pictureUrl ? (
-                  <img src={spacecraft.pictureUrl} />
-                ) : (
-                  "🚀"
-                )}
-              </div>
-              <div className={styles.spCardDetails}>
-                <p>Name: {spacecraft.name}</p>
-                <p>Capacity: {spacecraft.capacity}</p>
-              </div>
-              <div className={styles.spCardItem}>
-                <button
-                  onClick={() => handleDestroySpaceshipClick(spacecraft.id)}
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <h1>Space Crafts Page</h1>
+          <button onClick={() => handleBuildSpacecraftClick()}>
+            Build a Spacecraft
+          </button>
+          <div>
+            {spacecrafts.map((spacecraft) => {
+              return (
+                <div
+                  key={`spacecraft-${spacecraft.id}`}
+                  className={styles.spCard}
                 >
-                  Destroy
-                </button>
-              </div>
-              {/* <p>Name: {spacecraft.name}</p>
-              <p>Capacity: {spacecraft.capacity}</p>
-              <p>{spacecraft.id}</p>
-              <p>{spacecraft.description}</p>
-              <p>{spacecraft.currentLocation}</p>
-              <p>{spacecraft.pictureUrl}</p> */}
-            </div>
-          );
-        })}
-      </div>
+                  <div
+                    className={styles.spCardItem}
+                    onClick={() => handleImgClick(spacecraft.id)}
+                  >
+                    {spacecraft.pictureUrl ? (
+                      <img src={spacecraft.pictureUrl} />
+                    ) : (
+                      "🚀"
+                    )}
+                  </div>
+                  <div className={styles.spCardDetails}>
+                    <p>Name: {spacecraft.name}</p>
+                    <p>Capacity: {spacecraft.capacity}</p>
+                  </div>
+                  <div className={styles.spCardItem}>
+                    <button
+                      onClick={() => handleDestroySpaceshipClick(spacecraft.id)}
+                    >
+                      Destroy
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
     </>
   );
 }

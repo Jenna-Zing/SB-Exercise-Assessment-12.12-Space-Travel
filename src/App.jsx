@@ -1,30 +1,23 @@
 import styles from "./App.module.css";
 import TopNavigation from "./components/TopNavigation/TopNavigation";
-import { PlanetsContext, SpaceshipsContext } from "./context/galaxyContext";
+import { PlanetsContext, SpacecraftsContext } from "./context/galaxyContext";
 import SpaceTravelRouter from "./routes/SpaceTravelRouter";
 import { useEffect, useState } from "react";
 
 function App() {
-  // NOTE: normally, we use a separate provider file to not dirty the App.jsx, but I wanted to keep it here for learning purposes
+  // NOTE TO SELF: normally, we use a separate provider file to not dirty the App.jsx, but I wanted to keep it here for learning purposes
+  // Initialize the global contexts with empty arrays.  I'm letting the spacecrafts page and planets page call the respective API's to initialize them
   const [planets, setPlanets] = useState([]);
   const [spacecrafts, setSpacecrafts] = useState([]);
 
-  useEffect(() => {
-    console.log(
-      "localStorage spacecrafts",
-      JSON.parse(localStorage.getItem("MOCK_DB")).spacecrafts
-    );
-    // console.log("spacecrafts in context", spacecrafts);
-    setSpacecrafts(JSON.parse(localStorage.getItem("MOCK_DB")).spacecrafts);
-  }, []);
-
+  // NOTE:  passing setPlanets and setSpacecrafts to the context, so individual pages can update the values when calling the API's
   return (
     <>
-      <PlanetsContext.Provider value={planets}>
-        <SpaceshipsContext.Provider value={{ spacecrafts, setSpacecrafts }}>
+      <PlanetsContext.Provider value={{ planets, setPlanets }}>
+        <SpacecraftsContext.Provider value={{ spacecrafts, setSpacecrafts }}>
           <TopNavigation />
           <SpaceTravelRouter />
-        </SpaceshipsContext.Provider>
+        </SpacecraftsContext.Provider>
       </PlanetsContext.Provider>
     </>
   );

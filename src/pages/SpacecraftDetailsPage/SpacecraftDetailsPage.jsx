@@ -22,35 +22,10 @@ const SpacecraftDetailsPage = () => {
     setSpacecraft(response.data);
   }
 
-  // // 2. conditionally render -> SHOW LOADING COMPONENT while data is not defined
-  // if (!spacecraft) {
-  //   return <Loading />;
-  // }
-
-  // // 4. SHOW SPACECRAFT DETAILS WHEN DATA IS DEFINED
-  // return (
-  //   <div className={styles.detailsContainer}>
-  //     <div className={styles.imageContainer}>img - centered</div>
-
-  //     {/* Details Section */}
-  //     <div className={styles.infoContainer}>
-  //       {/* LEFT SECTION */}
-  //       <div className={styles.leftInfo}>
-  //         <p>Name: {spacecraft.name}</p>
-  //         <p>Capacity: {spacecraft.capacity}</p>
-  //       </div>
-
-  //       <div className={styles.rightInfo}>
-  //         <p>Description: </p>
-  //         <p className={styles.description}>{spacecraft.description}</p>
-  //       </div>
-  //       <div> left flex: name and capacity</div>
-  //       <div> right flex: description </div>
-  //     </div>
-  //   </div>
-  // );
   return (
     <div className={styles.pageWrapper}>
+      {/* 2. Conditionally render loading component when data is not defined.
+          4.  Show the data when it is defined */}
       {!spacecraft ? (
         <Loading />
       ) : (

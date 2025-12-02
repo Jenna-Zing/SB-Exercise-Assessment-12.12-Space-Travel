@@ -2,11 +2,11 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import SpaceTravelApi from "../../services/SpaceTravelApi";
 import styles from "./ConstructionPage.module.css";
-import { SpaceshipsContext } from "../../context/galaxyContext";
+import Loading from "../../components/Loading/Loading";
 
 export default function ConstructionPage() {
   const navigate = useNavigate();
-  const { spacecrafts, setSpacecrafts } = useContext(SpaceshipsContext);
+  const [loading, setLoading] = useState(false); // setting Loading to false by default, because we only want to show loading when building
 
   // "Controlled Components" Form State
   const [name, setName] = useState("");
@@ -19,14 +19,9 @@ export default function ConstructionPage() {
     navigate(-1); // navigate to previous page
   }
 
-  // function testName(e) {
-  //   console.log(e);
-  //   console.log(e.target.value);
-  //   setName(e.target.value);
-  // }
-
   async function handleBuild() {
-    /*     
+    /*  
+    PSEUDO-CODE for myself   
       1. Check if any of the required fields are empty
       1a. If all of the required fields are defined
       1a-error. Successful case -> setErrors to empty.  Then -> go ahead with the build.
@@ -62,6 +57,9 @@ export default function ConstructionPage() {
 
     // SUCCESSFUL CASE: no errors detected, so we can build the spacecraft!
 
+    // Show loading for building the spacecraft and resetting form
+    setLoading(true);
+
     // Call API to build spacecraft - note: this adds it to the persistent localStorage
     await SpaceTravelApi.buildSpacecraft({
       name,
@@ -70,69 +68,75 @@ export default function ConstructionPage() {
       pictureUrl: pictureUrl || null,
     });
 
-    // add the newly built spaceship to the spaceship context
-    setSpacecrafts([
-      ...spacecrafts,
-      {
-        name,
-        capacity: Number(capacity),
-        description,
-        pictureUrl: pictureUrl || null,
-      },
-    ]);
+    // Reset the form fields back to empty
+    setName("");
+    setCapacity("");
+    setDescription("");
+    setPictureUrl("");
+
+    setLoading(false);
   }
 
   return (
     <div className={styles.pageContainer}>
-      <div className={styles.topBar}>
-        <button onClick={() => handleBack()}>Back</button>
-      </div>
-      <div className={styles.formBox}>
-        {/* FORM */}
-        <label>
-          Name*:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
-        <label>
-          Capacity*:
-          <input
-            type="number"
-            value={capacity}
-            onChange={(e) => setCapacity(e.target.value)}
-          />
-        </label>
-        <label>
-          Description*:
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-          />
-        </label>
-        <label>
-          Picture URL:
-          <input
-            type="text"
-            value={pictureUrl}
-            onChange={(e) => setPictureUrl(e.target.value)}
-          />
-        </label>
-      </div>
-      <div className={styles.buildButtonRow}>
-        <button className={styles.buildButton} onClick={() => handleBuild()}>
-          Build
-        </button>
-      </div>
-      {errors.length > 0 && (
-        <div className={styles.error}>
-          {errors.map((err, index) => (
-            <p key={index}>{err}</p>
-          ))}
-        </div>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <div className={styles.topBar}>
+            <button onClick={() => handleBack()}>Back</button>
+          </div>
+          <div className={styles.formBox}>
+            {/* FORM */}
+            <label>
+              Name*:
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+            </label>
+            <label>
+              Capacity*:
+              <input
+                type="number"
+                value={capacity}
+                onChange={(e) => setCapacity(e.target.value)}
+              />
+            </label>
+            <label>
+              Description*:
+              <input
+                type="text"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </label>
+            <label>
+              Picture URL:
+              <input
+                type="text"
+                value={pictureUrl}
+                onChange={(e) => setPictureUrl(e.target.value)}
+              />
+            </label>
+          </div>
+          <div className={styles.buildButtonRow}>
+            <button
+              className={styles.buildButton}
+              onClick={() => handleBuild()}
+            >
+              Build
+            </button>
+          </div>
+          {errors.length > 0 && (
+            <div className={styles.error}>
+              {errors.map((err, index) => (
+                <p key={index}>{err}</p>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );
