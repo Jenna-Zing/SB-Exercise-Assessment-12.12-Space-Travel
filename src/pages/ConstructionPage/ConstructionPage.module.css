@@ -1,0 +1,29 @@
+.pageContainer {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  height: 100%;
+}
+
+.topBar {
+  margin-bottom: 1rem;
+}
+
+.formBox {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  border: 1px solid white;
+  padding: 2rem;
+}
+
+.buildButtonRow {
+  display: flex;
+  justify-content: flex-end; /* build button is put at the end of this row at bottom right */
+  margin-top: 1rem;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+}
