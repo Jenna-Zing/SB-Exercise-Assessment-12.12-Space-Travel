@@ -21,6 +21,25 @@
   padding: 1.5rem;
 }
 
+.spacecraftImg {
+  height: 8rem;
+  width: 8rem;
+  object-fit: contain; /* scale image to fit */
+  padding: 0.5rem;
+  border: 1px dashed white;
+}
+
+.placeholderImg {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px dashed white;
+  height: 8rem;
+  width: 8rem;
+  padding: 0.5rem;
+  font-size: 2rem; /* scale emoji */
+}
+
 .infoContainer {
   display: flex;
 }

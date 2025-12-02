@@ -26,6 +26,7 @@ export default function SpaceCraftsPage() {
   }
 
   function handleImgClick(spacecraftId) {
+    // navigate to the details page for the individual spacecraft
     navigate(`/spacecrafts/${spacecraftId}`);
   }
 
@@ -52,12 +53,12 @@ export default function SpaceCraftsPage() {
       {loading ? (
         <Loading />
       ) : (
-        <>
-          <h1>Space Crafts Page</h1>
+        <div className={styles.pageContainer}>
+          <h1>Spacecrafts Page</h1>
           <button onClick={() => handleBuildSpacecraftClick()}>
             Build a Spacecraft
           </button>
-          <div>
+          <div className={styles.cardsContainer}>
             {spacecrafts.map((spacecraft) => {
               return (
                 <div
@@ -69,9 +70,13 @@ export default function SpaceCraftsPage() {
                     onClick={() => handleImgClick(spacecraft.id)}
                   >
                     {spacecraft.pictureUrl ? (
-                      <img src={spacecraft.pictureUrl} />
+                      <img
+                        src={spacecraft.pictureUrl}
+                        alt={spacecraft.name}
+                        className={styles.spacecraftImg}
+                      />
                     ) : (
-                      "🚀"
+                      <div className={styles.placeholderImg}>🚀</div>
                     )}
                   </div>
                   <div className={styles.spCardDetails}>
@@ -89,7 +94,7 @@ export default function SpaceCraftsPage() {
               );
             })}
           </div>
-        </>
+        </div>
       )}
     </>
   );

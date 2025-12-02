@@ -31,7 +31,15 @@ const SpacecraftDetailsPage = () => {
       ) : (
         <div className={styles.detailsContainer}>
           <div className={styles.imageContainer}>
-            {spacecraft.pictureUrl ? <img src={spacecraft.pictureUrl} /> : "🚀"}
+            {spacecraft.pictureUrl ? (
+              <img
+                src={spacecraft.pictureUrl}
+                alt={spacecraft.name}
+                className={styles.spacecraftImg}
+              />
+            ) : (
+              <div className={styles.placeholderImg}>🚀</div>
+            )}
           </div>
 
           {/* Details Section */}
