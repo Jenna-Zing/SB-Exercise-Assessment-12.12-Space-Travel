@@ -16,7 +16,9 @@ function App() {
       <PlanetsContext.Provider value={{ planets, setPlanets }}>
         <SpacecraftsContext.Provider value={{ spacecrafts, setSpacecrafts }}>
           <TopNavigation />
-          <SpaceTravelRouter />
+          <div className={styles.pageContainer}>
+            <SpaceTravelRouter />
+          </div>
         </SpacecraftsContext.Provider>
       </PlanetsContext.Provider>
     </>
