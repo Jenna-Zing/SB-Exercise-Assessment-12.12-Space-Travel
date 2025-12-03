@@ -12,14 +12,14 @@ export default function PlanetsPage() {
   const { spacecrafts, setSpacecrafts } = useContext(SpacecraftsContext);
 
   const [loading, setLoading] = useState(true);
-  // const [selectedPlanetId, setSelectedPlanetId] = useState(null);
-  // const [selectedSpacecraftId, setSelectedSpacecraftId] = useState(null);
+  const [selectedPlanetId, setSelectedPlanetId] = useState(null);
+  const [selectedSpacecraftId, setSelectedSpacecraftId] = useState(null);
 
   useEffect(() => {
-    loadData();
+    loadInitialData();
   }, []); // empty dependency array means this will run only on mount (aka first page load)
 
-  async function loadData() {
+  async function loadInitialData() {
     setLoading(true);
 
     const planetsRes = await SpaceTravelApi.getPlanets();
@@ -29,6 +29,67 @@ export default function PlanetsPage() {
     setPlanets(planetsRes.data);
 
     console.log(planetsRes.data, spacecraftRes.data);
+
+    setLoading(false);
+  }
+
+  async function handlePlanetClick(planetId) {
+    if (selectedPlanetId === planetId) {
+      setSelectedPlanetId(null); // deselect planet if clicked again
+      console.log("1");
+      return;
+    } else {
+      console.log("2", planetId, typeof planetId);
+      setSelectedPlanetId(planetId); // select new planet
+    }
+
+    // console.log(`clicked planet ${planetId}, selected: ${selectedPlanetId}`);
+
+    await trySendingSpacecraft(selectedSpacecraftId, planetId);
+  }
+
+  async function handleSpacecraftClick(spacecraftId) {
+    console.log(`selected spacecraft ${spacecraftId}`);
+    if (selectedSpacecraftId === spacecraftId) {
+      setSelectedSpacecraftId(null); // deselect spacecraft if the selected is clicked again
+      return;
+    } else {
+      setSelectedSpacecraftId(spacecraftId); // select spacecraft
+    }
+
+    await trySendingSpacecraft(spacecraftId, selectedPlanetId);
+  }
+
+  async function trySendingSpacecraft(spacecraftId, planetId) {
+    console.log(`trying to send ${spacecraftId} to planet ${planetId}`);
+
+    if (planetId !== 0 && (!spacecraftId || !planetId)) return; // must select both a destination planet and spacecraft in order to move the spacecraft to new planet
+
+    // if the selected spacecraft is already on the target planet, do not move it
+    const selectedSpacecraft = spacecrafts.find((s) => s.id === spacecraftId);
+    if (!selectedSpacecraft) return; // safety check
+
+    if (selectedSpacecraft.currentLocation === planetId) {
+      return; // the selected spacecraft is already at the destination planet!  So do not proceed with calling API
+    }
+
+    // setLoading to true for API calls
+    setLoading(true);
+
+    await SpaceTravelApi.sendSpacecraftToPlanet({
+      spacecraftId,
+      targetPlanetId: planetId,
+    });
+
+    // Refresh planets and spacecrafts from API
+    const planetsRes = await SpaceTravelApi.getPlanets();
+    const spacecraftRes = await SpaceTravelApi.getSpacecrafts();
+    setPlanets(planetsRes.data);
+    setSpacecrafts(spacecraftRes.data);
+
+    // Deselect both after successful transfer
+    setSelectedPlanetId(null);
+    setSelectedSpacecraftId(null);
 
     setLoading(false);
   }
@@ -48,7 +109,12 @@ export default function PlanetsPage() {
 
           return (
             <div key={planet.id} className={styles.planetCard}>
-              <div className={styles.planetInfoCard}>
+              <div
+                className={`${styles.planetInfoCard} ${
+                  selectedPlanetId === planet.id ? styles.selected : ""
+                }`}
+                onClick={() => handlePlanetClick(planet.id)}
+              >
                 {planet.pictureUrl ? (
                   <img
                     src={planet.pictureUrl}
@@ -66,7 +132,12 @@ export default function PlanetsPage() {
                 {stationedSpacecrafts.map((spacecraft) => (
                   <div
                     key={spacecraft.id}
-                    className={styles.spacecraftInfoCard}
+                    className={`${styles.spacecraftInfoCard} ${
+                      selectedSpacecraftId === spacecraft.id
+                        ? styles.selected
+                        : ""
+                    }`}
+                    onClick={() => handleSpacecraftClick(spacecraft.id)}
                   >
                     {spacecraft.pictureUrl ? (
                       <img

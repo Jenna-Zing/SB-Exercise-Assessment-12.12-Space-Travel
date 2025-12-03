@@ -72,3 +72,13 @@
   align-items: center;
   font-size: 2rem;
 }
+
+/* reads as hover effect only for unselected items */
+.planetInfoCard:not(.selected):hover,
+.spacecraftInfoCard:not(.selected):hover {
+  border-color: green;
+}
+
+.selected {
+  border-color: red;
+}
