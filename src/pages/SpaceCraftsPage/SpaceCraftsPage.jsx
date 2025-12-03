@@ -19,10 +19,17 @@ export default function SpaceCraftsPage() {
   }, []); // empty dependency array means this will run only on mount (aka first page load)
 
   async function loadSpacecrafts() {
-    let response = await SpaceTravelApi.getSpacecrafts();
-    setSpacecrafts(response.data); // update the global context with fetched data
-    console.log("res data for spacecrafts", response.data);
-    setLoading(false);
+    try {
+      let response = await SpaceTravelApi.getSpacecrafts();
+      setSpacecrafts(response.data); // update the global context with fetched data
+      setLoading(false);
+      console.log(
+        "Successful Initial Data Load for Spacecrafts",
+        response.data
+      );
+    } catch (err) {
+      console.log(`Error while loading initial data for Spacecrafts Page`, err);
+    }
   }
 
   function handleImgClick(spacecraftId) {
@@ -38,14 +45,23 @@ export default function SpaceCraftsPage() {
   }
 
   async function handleDestroySpaceshipClick(spacecraftId) {
-    // show loading while waiting for API to delete spaceship
-    setLoading(true);
+    try {
+      // show loading while waiting for API to delete spaceship
+      setLoading(true);
 
-    // destroy the spaceship
-    await SpaceTravelApi.destroySpacecraftById({ id: spacecraftId });
+      // destroy the spaceship
+      await SpaceTravelApi.destroySpacecraftById({ id: spacecraftId });
 
-    // After destroying a spacecraft, reload the spacecrafts list so the context is up-to-date with the mockDB
-    loadSpacecrafts();
+      // After destroying a spacecraft, reload the spacecrafts list so the context is up-to-date with the mockDB
+      loadSpacecrafts();
+
+      console.log(`successfully destroyed spacecraft with id: ${spacecraftId}`);
+    } catch (err) {
+      console.log(
+        `error while trying to destroy spacecraftId: ${spacecraftId}`,
+        err
+      );
+    }
   }
 
   return (

@@ -19,7 +19,7 @@ export default function HomePage() {
               travel.
             </li>
             <li>Construct your own spacecraft!</li>
-            <li>Destroy a spacecraft</li>
+            <li>Destroy a spacecraft.</li>
           </ul>
         </div>
         <div className={styles.feature}>
@@ -29,7 +29,10 @@ export default function HomePage() {
               Discover new and exciting planets waiting to be explored by
               intrepid space travelers.
             </li>
-            <li>Click a planet then the desired spacecraft to move it!</li>
+            <li>
+              Click a spacecraft and the desired destination planet to deploy
+              the spacecraft to that location!
+            </li>
           </ul>
         </div>
       </div>
